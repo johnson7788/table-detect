@@ -4,18 +4,18 @@ links: http://59.110.234.163:9990/static/models/table-detect/
 models weights download and move to ./modes    
 
 
-###  test table detect   
+###  第一步： 对表格检测
 
 ` 
 python table_detect.py
 `
 
-###  test table ceil detect with unet    
+###  第二步，使用unet对单元格进行检测  
 ` 
 python table_ceil.py
 `
 
-## train table line 
+## 第三步，训练表格线
 
 ` 
 python train/train.py

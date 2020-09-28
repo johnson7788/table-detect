@@ -10,6 +10,7 @@
 *.hdf5
 *.weights
 *.traineddata
+.idea
 dist
 buil
 .DS_Store*

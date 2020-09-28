@@ -8,9 +8,9 @@ table ceil
 
 import cv2
 import numpy as np
-from utils              import minAreaRectbox,measure,eval_angle,draw_lines
+from utils import minAreaRectbox,measure,eval_angle,draw_lines
 from table_detect import table_detect
-from table_line   import table_line
+from table_line import table_line
 
 class table:
    def __init__(self,img,tableSize = (416, 416),tableLineSize=(1024,1024),isTableDetect=False):
@@ -90,7 +90,7 @@ if __name__=='__main__':
     tmp = np.zeros_like(img)
     img = draw_boxes(tmp,tableDetect.tableCeilBoxes,color=(255,255,255))
     print(time.time()-t)
-    cv2.imwrite('img/table-ceil.png',img)
+    cv2.imwrite('img/table-cell.png',img)
     
                
                

@@ -11,6 +11,7 @@
 *.weights
 *.traineddata
 *.tar.gz
+img/table_without*
 .idea
 dist
 buil

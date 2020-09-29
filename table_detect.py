@@ -95,7 +95,7 @@ def fix_table_box_for_table_line(boxes,confidences,img):
         
                 
     return boxes,adBoxes
-        
+
 
 if __name__=='__main__':
     import time

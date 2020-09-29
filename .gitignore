@@ -10,6 +10,7 @@
 *.hdf5
 *.weights
 *.traineddata
+*.tar.gz
 .idea
 dist
 buil

@@ -18,13 +18,20 @@ if __name__=='__main__':
     filepath = './models/table-line-fine.h5'##模型权重存放位置 
     
     checkpointer = ModelCheckpoint(filepath=filepath,monitor='loss',verbose=0,save_weights_only=True, save_best_only=True)
+    # 学习率衰减
     rlu = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=5, verbose=0, mode='auto', cooldown=0, min_lr=0)
     model.compile(optimizer=Adam(lr=0.0001), loss='binary_crossentropy', metrics=['acc'])
 
-    paths = glob('./train/dataset-line/*/*.json')##table line dataset label with labelme
+    # table line dataset label with labelme
+    paths = glob('./train/dataset-line/*/*.json')
+
+    #切分训练集和测试集
     trainP,testP = train_test_split(paths,test_size=0.1)
+    #训练集个数，测试集个数
     print('total:',len(paths),'train:',len(trainP),'test:',len(testP))
+    #批次大小
     batchsize=4
+    #生成dataloader
     trainloader = gen(trainP,batchsize=batchsize,linetype=1)
     testloader = gen(testP,batchsize=batchsize,linetype=1)
     model.fit_generator(trainloader,

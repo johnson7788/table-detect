@@ -232,14 +232,16 @@ def table_line(img, size=(512, 512), hprob=0.5, vprob=0.5, row=50, col=30, alph=
 
 if __name__ == '__main__':
     import time
-
-    p = 'img/table-detect.jpg'
+    # p = 'img/table-detect.jpg'
+    p = 'img/table_without_line.jpg'
     from utils import draw_lines
-
+    #读取图片
     img = cv2.imread(p)
+    #计算当前时间，用于统计模型推理耗时
     t = time.time()
+    #
     rowboxes, colboxes = table_line(img[..., ::-1], size=(512, 512), hprob=0.5, vprob=0.5)
     img = draw_lines(img, rowboxes + colboxes, color=(255, 0, 0), lineW=2)
 
     print(time.time() - t, len(rowboxes), len(colboxes))
-    cv2.imwrite('img/table-line.png', img)
+    cv2.imwrite('img/table_without_line_line.png', img)

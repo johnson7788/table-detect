@@ -96,18 +96,15 @@ def fix_table_box_for_table_line(boxes,confidences,img):
                 
     return boxes,adBoxes
         
-        
-        
-    
 
 if __name__=='__main__':
     import time
-    p = 'img/table-detect.jpg'
-    # p = 'img/table_without_line.jpg'
+    # p = 'img/table-detect.jpg'
+    p = 'img/table_without_line.jpg'
     img = cv2.imread(p)
     t =time.time()
     boxes,adBoxes,scores=table_detect(img, sc=(416, 416),thresh=0.5,NMSthresh=0.3)
     print(time.time()-t,boxes,adBoxes,scores)
     img = rectangle(img,adBoxes)
-    # img.save('img/table_without_line.png')
-    img.save('img/table_detect.png')
+    img.save('img/table_without_line_detect.png')
+    # img.save('img/table_detect.png')

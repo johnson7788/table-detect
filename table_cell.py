@@ -80,7 +80,8 @@ class table:
 if __name__=='__main__':
     import time
     from utils import draw_boxes
-    p = 'img/table-detect.jpg'
+    # p = 'img/table-detect.jpg'
+    p = 'img/table_without_line.jpg'
     img = cv2.imread(p)
     t =time.time()
     
@@ -90,7 +91,7 @@ if __name__=='__main__':
     tmp = np.zeros_like(img)
     img = draw_boxes(tmp,tableDetect.tableCeilBoxes,color=(255,255,255))
     print(time.time()-t)
-    cv2.imwrite('img/table-cell.png',img)
+    cv2.imwrite('img/table_without_line-cell.png',img)
     
                
                

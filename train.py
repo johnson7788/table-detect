@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Sep 9 23:11:51 2020
-
 @author: chineseocr
 """
+
+######################################################
+#  对图片的横线和竖线进行分类训练
+######################################################
+
 import sys
 sys.path.append('.')
 from table_line import model

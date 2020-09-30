@@ -7,35 +7,52 @@ utils
 """
 import cv2
 import numpy as np
+from scipy.ndimage import filters, interpolation
+from numpy import amin, amax
+from skimage import measure
+from scipy.spatial import distance as dist
+from numpy import cos, sin
+from PIL import Image
 
 
 def nms_box(boxes, scores, score_threshold=0.5, nms_threshold=0.3):
-    ##nms box
+    """
+    使用非极大值抑制
+    :param boxes:  bboxe列表
+    :param scores:  对应的置信度
+    :param score_threshold:  置信度阈值
+    :param nms_threshold:  NMS阈值
+    :return:
+    """
     boxes = np.array(boxes)
     scores = np.array(scores)
+    # ind是每个scores和scores的阈值比较后的bool值
     ind = scores > score_threshold
+    # 只保留大于scores阈值的bbox和scores
     boxes = boxes[ind]
     scores = scores[ind]
 
     def box_to_center(box):
+        """
+        对单个bbox进行转换
+        :param box:bbox的 [xmin, ymin, xmax, ymax ]
+        :return: [x,y,w,h]
+        """
         xmin, ymin, xmax, ymax = [round(float(x), 4) for x in box]
         w = xmax - xmin
         h = ymax - ymin
         return [round(xmin, 4), round(ymin, 4), round(w, 4), round(h, 4)]
 
+    # 转换bbox和保留浮点数小数位
     newBoxes = [box_to_center(box) for box in boxes]
     newscores = [round(float(x), 6) for x in scores]
-
+    # 置信NMS
     index = cv2.dnn.NMSBoxes(newBoxes, newscores, score_threshold=score_threshold, nms_threshold=nms_threshold)
     if len(index) > 0:
         index = index.reshape((-1,))
         return boxes[index], scores[index]
     else:
         return np.array([]), np.array([])
-
-
-from scipy.ndimage import filters, interpolation
-from numpy import amin, amax
 
 
 def resize_im(im, scale, max_scale=None):
@@ -89,26 +106,32 @@ def eval_angle(img, angleRange=[-5, 5]):
 
 
 def letterbox_image(image, size, fillValue=[128, 128, 128]):
-    '''
-    resize image with unchanged aspect ratio using padding
-    '''
+    """
+    调整图像尺寸使用padding调整宽高比不变,
+    :param image: 原始图像
+    :param size: 缩放尺寸
+    :param fillValue:
+    :return: bbox, 新的宽度和原宽度的比值, 新的高度和原高度的比值
+    """
     image_h, image_w = image.shape[:2]
     w, h = size
+    # 根据缩放比例计算新的图片的宽和高
     new_w = int(image_w * min(w * 1.0 / image_w, h * 1.0 / image_h))
     new_h = int(image_h * min(w * 1.0 / image_w, h * 1.0 / image_h))
-
+    # 调整图片尺寸
     resized_image = cv2.resize(image, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
     # cv2.imwrite('tmp/test.png', resized_image[...,::-1])
+    # 如果为None，使用均值填充
     if fillValue is None:
         fillValue = [int(x.mean()) for x in cv2.split(np.array(image))]
+    # 新建一个boxed
     boxed_image = np.zeros((size[1], size[0], 3), dtype=np.uint8)
+    # boxed中所有值都赋值为fillValue
     boxed_image[:] = fillValue
+    # 只取新的h和w的像素作为boxed
     boxed_image[:new_h, :new_w, :] = resized_image
 
     return boxed_image, new_w / image_w, new_h / image_h
-
-
-from skimage import measure
 
 
 def get_table_line(binimg, axis=0, lineW=10):
@@ -268,9 +291,6 @@ def line_to_line(points1, points2, alpha=10):
     return points1
 
 
-from scipy.spatial import distance as dist
-
-
 def _order_points(pts):
     # 根据x坐标对点进行排序
     """
@@ -346,9 +366,6 @@ def xy_rotate_box(cx, cy, w, h, angle=0, degree=None, **args):
     return x1, y1, x2, y2, x3, y3, x4, y4
 
 
-from numpy import cos, sin
-
-
 def rotate(x, y, angle, cx, cy):
     angle = angle  # *pi/180
     x_new = (x - cx) * cos(angle) - (y - cy) * sin(angle) + cx
@@ -385,10 +402,13 @@ def minAreaRectbox(regions, flag=True, W=0, H=0, filtersmall=False, adjustBox=Fa
     return boxes
 
 
-from PIL import Image
-
-
 def rectangle(img, boxes):
+    """
+    把bbox画到图上
+    :param img:
+    :param boxes:
+    :return:
+    """
     tmp = np.copy(img)
     for box in boxes:
         xmin, ymin, xmax, ymax = box[:4]
@@ -431,3 +451,4 @@ def draw_boxes(im, bboxes, color=(0, 0, 0)):
         cv2.line(tmp, (int(x4), int(y4)), (int(x1), int(y1)), c, 1, lineType=cv2.LINE_AA)
 
     return tmp
+
